@@ -2,44 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { IonContent, IonHeader, IonPage, IonItem, IonToolbar, IonSearchbar, IonList, IonLabel, IonFooter } from '@ionic/react';
 import goalsT from './../data/goalTitles';
 import axios from 'axios';
+import { RouteComponentProps } from 'react-router';
 
-interface CProps {
-    index: number;
-  }
+interface UserDetailPageProps extends RouteComponentProps<{
+    id: string;
+  }> {}
 
- const CPage: React.FC<CProps> = ({ index }) => {
+ const CPage: React.FC<UserDetailPageProps> = ({match}) => {
   const [searchText, setSearchText] = useState('');
+  const[ind, setInd] = useState(match.params.id);
   const [showCompanies, setShowCompanies] = useState(true);
-  const [data, setData] = useState({});
+  const [data, setData] = useState([]);
 
   useEffect(  ()=> {
     const fetchData = async () => {
-      let ind = index.toString();
       const url = 'https://api.airtable.com/v0/app4YBXrKHrULqyRv/sdg?api_key=keyXxMwlPwlFxrUHB&filterByFormula={' + ind +'}="Y"';
       const result = await axios(url);
- 
-      setData(result.data);
-      console.log(result.data);
+        setData(result.data['records']);
     };
-
-      fetchData();
-
-  },[]);
+    fetchData();
+  });
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-        <IonSearchbar value={goalsT[index]} onIonChange={e => setSearchText(e.detail.value!)}></IonSearchbar>
+        <IonSearchbar value={goalsT[parseInt(match.params.id)]} onIonChange={e => setSearchText(e.detail.value!)}></IonSearchbar>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-      {/* {
-        showCompanies &&           <IonList>
+      {
+        data &&  <IonList>
         {
-          goalItems.map((item, index) => ( 
+          data.map((item, index) => ( 
            
       <IonItem>
-        <IonLabel onClick = {()=> { setGoalIndex(index+1); setShowCompanies(!showCompanies)}}>{item}</IonLabel>
+        <IonLabel>{item['fields']['company']}</IonLabel>
       </IonItem>
           )
           )
@@ -47,7 +44,7 @@ interface CProps {
         
       
       </IonList>
-        } */}
+        }
 
       </IonContent>
       <IonFooter>

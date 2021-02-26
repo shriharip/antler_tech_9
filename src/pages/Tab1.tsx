@@ -3,10 +3,11 @@ import { IonContent, IonHeader, IonPage, IonItem, IonToolbar, IonSearchbar, IonL
 import goalsT from './../data/goalTitles';
 import axios from 'axios';
 import { Route } from 'react-router';
-import CPage from './Companies';
+import { useHistory } from 'react-router-dom';
 
  const Tab1: React.FC = () => {
   const [searchText, setSearchText] = useState('');
+  const history = useHistory();
 
   return (
     <IonPage>
@@ -24,7 +25,7 @@ import CPage from './Companies';
             //   return  <CPage index={index + 1} /> ;
             // }}> 
       <IonItem>
-        <IonLabel>{item}</IonLabel>
+        <IonLabel onClick={()=>history.push(`/company/${index + 1}`)}>{item}</IonLabel>
       </IonItem>
       // </Route>
           )
